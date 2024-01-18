@@ -7,11 +7,11 @@ async fn health_check() -> HttpResponse {
 // Signature of `run` changes.
 // It return `Server` on the happy path and `async` keyword was dropped.
 // There is no more call to `.await`.
-pub fn run() -> std::io::Result<Server> {
+pub fn run(address: &str) -> std::io::Result<Server> {
     let server = HttpServer::new(|| {
         App::new().route("/health_check", web::get().to(health_check))
     })
-    .bind("127.0.0.1:8000")?
+    .bind(address)?
     .run();
 
     Ok(server)

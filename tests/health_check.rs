@@ -24,7 +24,7 @@ async fn health_check_works() {
 // if the required setup fails, this can panic and crash.
 // Launch our application in the background ~somehow~
 fn spawn_app() {
-    let server = zero2production::run().expect("Failed to bind address.");
+    let server = zero2production::run("127.0.0.1:0").expect("Failed to bind address.");
     // Launch server as a background task
     // tokio::spawn returns a handle to the spawned future,
     // but there is no use for it here, hence the non-binding let.

@@ -1,7 +1,8 @@
 #[tokio::test]
-async fn health_check() {
+async fn health_check_works() {
     // Arrange
-    spawn_app().await.expect("Failed to spawn our app.");
+    // No `.await`, no `.expect`
+    spawn_app();
     // We need to bring in `reqwest`
     // to perform HTTP requests against our application.
     let client = reqwest::Client::new();
@@ -18,7 +19,14 @@ async fn health_check() {
     assert_eq!(Some(0), response.content_length());
 }
 
+// No `.await` call, therefore no need for `spawn_app` to be async now.
+// Since tests are running, it is not worth it to propagate errors:
+// if the required setup fails, this can panic and crash.
 // Launch our application in the background ~somehow~
-async fn spawn_app() -> std::io::Result<()> {
-    todo!()
+fn spawn_app() {
+    let server = zero2production::run().expect("Failed to bind address.");
+    // Launch server as a bachground task
+    // tokio::spawn returns a handle to the spawned future,
+    // but there is no use for it here, hence the non-binding let.
+    let _ = tokio::spawn(server);
 }
